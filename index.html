@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1B3A2C">
+<meta name="description" content="Roadbook Schwarzwald · Vogesen · Elsass — 14.–17. Oktober 2026">
+<meta property="og:title" content="Roadbook · Schwarzwald & Vogesen · 14.–17. Oktober 2026">
+<meta property="og:description" content="Vier Tage · ~900 km · Drei Länder · Lotus Elise & Friends">
+<meta property="og:type" content="website">
+<title>Roadbook · Schwarzwald & Vogesen · Okt 2026</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Special+Elite&family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<style>
+/* ============================================================ */
+/* VINTAGE RACING PALETTE — same as PDF                         */
+/* ============================================================ */
+:root {
+  --paper:        #F1E6CC;
+  --paper-dark:   #E5D5B0;
+  --paper-light:  #F8F0DC;
+  --ink:          #1A1612;
+  --ink-soft:     #3A3328;
+  --green:        #1B3A2C;
+  --green-deep:   #0E2419;
+  --green-bright: #2D5240;
+  --red:          #8B2A1F;
+  --red-faded:    #A64A3D;
+  --brass:        #B08D3C;
+  --brass-light:  #D4B870;
+  --tan:          #C9B086;
+  --navy:         #2C4A5C;
+
+  --shadow-sm: 0 2px 8px rgba(26,22,18,0.08);
+  --shadow-md: 0 4px 16px rgba(26,22,18,0.12);
+  --shadow-lg: 0 8px 32px rgba(26,22,18,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 70px; -webkit-text-size-adjust: 100%; }
+@media (min-width: 600px) { html { scroll-padding-top: 80px; } }
+
+body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(176,141,60,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(139,42,31,0.06) 0%, transparent 55%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+@media (min-width: 768px) { body { font-size: 17px; } }
+
+::selection { background: var(--brass); color: var(--paper); }
+
+a { color: var(--red); text-decoration: none; transition: color .2s ease; }
+a:hover { color: var(--red-faded); }
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* ============================================================ */
+/* STICKY NAV                                                   */
+/* ============================================================ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(241,230,204,0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1.5px solid var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-brand {
+  font-family: 'Anton', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.nav-brand .accent {
+  color: var(--red);
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  display: block;
+  font-weight: 400;
+  margin-top: 2px;
+}
+@media (min-width: 600px) {
+  .nav-brand { font-size: 18px; }
+  .nav-brand .accent { font-size: 11px; }
+  .nav-inner { padding: 10px 16px; gap: 16px; }
+}
+
+.nav-links-wrap {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+.nav-links-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, var(--paper));
+  pointer-events: none;
+  opacity: 0.85;
+}
+.nav-links {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 2px;
+  scroll-snap-type: x proximity;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 8px 10px;
+  white-space: nowrap;
+  border-radius: 4px;
+  transition: all .2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  scroll-snap-align: start;
+}
+.nav-links a:hover {
+  color: var(--red);
+  background: rgba(176,141,60,0.12);
+}
+.nav-links a.active {
+  color: var(--red);
+  background: rgba(139,42,31,0.10);
+}
+.nav-pdf {
+  flex-shrink: 0;
+  font-family: 'Special Elite', monospace !important;
+  font-size: 10.5px !important;
+  border: 1px solid var(--ink) !important;
+  background: var(--paper-light);
+  letter-spacing: 0.18em !important;
+  padding: 8px 10px !important;
+}
+.nav-pdf:hover { background: var(--ink) !important; color: var(--paper) !important; }
+
+/* ============================================================ */
+/* HERO / COVER                                                 */
+/* ============================================================ */
+.hero {
+  position: relative;
+  padding: 20px 12px 36px 12px;
+  text-align: center;
+}
+@media (min-width: 600px) { .hero { padding: 32px 16px 48px 16px; } }
+
+.hero-frame {
+  max-width: 900px;
+  margin: 0 auto;
+  border: 2px solid var(--ink);
+  padding: 20px 14px 28px 14px;
+  position: relative;
+}
+@media (min-width: 600px) { .hero-frame { padding: 24px 16px 32px 16px; } }
+
+.hero-frame::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid var(--ink);
+  pointer-events: none;
+}
+.checkered {
+  height: 20px;
+  background:
+    linear-gradient(45deg, var(--ink) 25%, transparent 25%) 0 0/14px 14px,
+    linear-gradient(-45deg, var(--ink) 25%, transparent 25%) 0 7px/14px 14px,
+    linear-gradient(45deg, transparent 75%, var(--ink) 75%) 7px 7px/14px 14px,
+    linear-gradient(-45deg, transparent 75%, var(--ink) 75%) 7px 14px/14px 14px;
+  margin-bottom: 20px;
+}
+@media (min-width: 600px) { .checkered { height: 24px; margin-bottom: 24px; } }
+.tagline {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 16px;
+}
+.hero-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(48px, 13vw, 120px);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  animation: fadeInUp .8s ease-out;
+}
+.hero-subtitle {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
+  font-size: clamp(13px, 3.5vw, 18px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  display: inline-block;
+  padding-left: 8px;
+  padding-right: 8px;
+  animation: fadeInUp .8s ease-out .15s both;
+}
+.hero-route {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(15px, 4vw, 19px);
+  color: var(--green-deep);
+  margin: 24px 0;
+  line-height: 1.5;
+  animation: fadeInUp .8s ease-out .3s both;
+}
+.hero-emblem {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+  animation: spinIn 1.2s ease-out .4s both;
+}
+.hero-emblem svg {
+  width: 80px;
+  height: 80px;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 8px;
+  margin: 24px auto;
+  padding: 16px 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  animation: fadeInUp .8s ease-out .5s both;
+}
+@media (min-width: 480px) {
+  .hero-stats { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Stardos Stencil', sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 7vw, 36px);
+  color: var(--green);
+  line-height: 1;
+  display: block;
+}
+.stat-lbl {
+  font-family: 'Special Elite', monospace;
+  font-size: clamp(8px, 2.4vw, 10px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: 4px;
+  display: block;
+}
+.hero-meta {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 3vw, 14px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 16px;
+  animation: fadeInUp .8s ease-out .6s both;
+}
+.hero-date {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(22px, 6vw, 32px);
+  letter-spacing: 0.04em;
+  display: block;
+  margin: 8px 0;
+  color: var(--ink);
+}
+.hero-vehicle {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--green-deep);
+  margin-top: 12px;
+}
+.hero-cta {
+  margin-top: 28px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeInUp .8s ease-out .7s both;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 14px 22px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all .2s ease;
+  text-decoration: none;
+  min-height: 44px;
+}
+.btn:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+.btn-primary { background: var(--green-deep); color: var(--paper); border-color: var(--green-deep); }
+.btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+
+/* ============================================================ */
+/* SECTION FRAME                                                */
+/* ============================================================ */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px 12px 24px 12px;
+}
+@media (min-width: 600px) {
+  .section { padding: 48px 16px 32px 16px; }
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+.section-eyebrow {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.section-num {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--red);
+}
+.section-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(32px, 9vw, 56px);
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.section-subtitle {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
+  font-size: clamp(12px, 3vw, 14px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  padding-bottom: 12px;
+  border-bottom: 0.5px solid var(--ink);
+  margin-bottom: 24px;
+}
+
+/* ============================================================ */
+/* OVERVIEW                                                     */
+/* ============================================================ */
+.overview-intro {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(15px, 4vw, 18px);
+  line-height: 1.6;
+  color: var(--green-deep);
+  border-left: 3px solid var(--brass);
+  padding: 4px 16px;
+  margin-bottom: 24px;
+}
+.overview-totals {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--ink);
+  background: rgba(176,141,60,0.08);
+  margin-bottom: 24px;
+}
+.overview-totals .stat-num { font-size: clamp(20px, 6vw, 28px); }
+.overview-totals .stat-lbl { font-size: 9px; }
+
+@media (min-width: 600px) {
+  .overview-totals { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stages-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border: 1px solid var(--ink);
+}
+.stages-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+  background: rgba(255,255,255,0.3);
+}
+.stages-table th {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--green-deep);
+  padding: 10px 12px;
+  text-align: left;
+}
+.stages-table th:last-child { text-align: center; }
+.stages-table td {
+  padding: 12px;
+  border-bottom: 0.5px dotted var(--ink);
+  font-size: 14px;
+  vertical-align: top;
+}
+.stages-table td:last-child { text-align: center; white-space: nowrap; }
+.stages-table tbody tr:last-child td { border-bottom: none; }
+.stages-table tbody tr { transition: background .15s ease; }
+.stages-table tbody tr:hover { background: rgba(176,141,60,0.10); cursor: pointer; }
+.stage-cell-num {
+  font-family: 'Stardos Stencil', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--red);
+}
+.stage-cell-route { font-weight: 600; line-height: 1.3; }
+.stage-cell-day {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  display: block;
+}
+.stage-cell-via {
+  font-style: italic;
+  color: var(--green-deep);
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+/* ============================================================ */
+/* MAP                                                          */
+/* ============================================================ */
+.map-wrap {
+  border: 1px solid var(--ink);
+  background: var(--paper-dark);
+  padding: 4px;
+  margin: 14px 0 6px 0;
+  position: relative;
+}
+@media (min-width: 480px) { .map-wrap { padding: 6px; margin: 16px 0 8px 0; } }
+
+.map {
+  width: 100%;
+  height: 280px;
+  background: var(--paper-dark);
+}
+.map.overview-map { height: 380px; }
+
+@media (min-width: 600px) {
+  .map { height: 360px; }
+  .map.overview-map { height: 500px; }
+}
+@media (min-width: 992px) {
+  .map { height: 420px; }
+  .map.overview-map { height: 600px; }
+}
+
+/* Vintage tile filter */
+.leaflet-tile-pane {
+  filter: sepia(0.55) saturate(0.7) brightness(1.05) contrast(0.92) hue-rotate(-8deg);
+}
+
+.leaflet-container {
+  background: var(--paper-dark);
+  font-family: 'Cormorant Garamond', serif;
+}
+.leaflet-popup-content-wrapper {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  box-shadow: var(--shadow-md);
+}
+.leaflet-popup-content {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  margin: 12px 14px;
+  line-height: 1.4;
+}
+.leaflet-popup-content b, .leaflet-popup-content strong {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 3px;
+}
+.leaflet-popup-tip { background: var(--paper); }
+.leaflet-control-attribution {
+  font-family: 'Special Elite', monospace !important;
+  font-size: 9px !important;
+  background: rgba(241,230,204,0.85) !important;
+  color: var(--ink-soft);
+}
+.leaflet-control-zoom a {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--ink) !important;
+  font-family: 'Anton', sans-serif !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+}
+
+.map-caption {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Custom marker */
+.wp-marker {
+  background: transparent;
+  border: none;
+}
+.wp-marker .pin {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--paper);
+  box-shadow: 0 0 0 1.5px var(--ink), 0 2px 4px rgba(0,0,0,0.3);
+}
+.wp-marker .pin.start { background: var(--green); }
+.wp-marker .pin.end { background: var(--ink); }
+.wp-marker .pin.via { background: var(--red); }
+.wp-marker .pin.museum {
+  background: var(--brass);
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  border-radius: 0;
+}
+.wp-marker .pin.hotel {
+  background: var(--paper);
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid var(--ink);
+}
+
+/* ============================================================ */
+/* STAGE                                                        */
+/* ============================================================ */
+.stage {
+  scroll-margin-top: 80px;
+}
+.stage-banner {
+  background: var(--green-deep);
+  color: var(--paper);
+  padding: 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 4px solid var(--brass);
+  margin: 0 -12px;
+}
+@media (min-width: 600px) {
+  .stage-banner { padding: 20px 16px; gap: 16px; margin: 0 -16px; }
+}
+.stage-banner-num {
+  font-family: 'Stardos Stencil', sans-serif;
+  font-weight: 700;
+  font-size: clamp(40px, 13vw, 72px);
+  line-height: 1;
+  color: var(--brass-light);
+  border-right: 1px solid var(--brass);
+  padding-right: 12px;
+  flex-shrink: 0;
+}
+@media (min-width: 600px) {
+  .stage-banner-num { padding-right: 16px; }
+}
+.stage-banner-text { flex: 1; min-width: 0; }
+.stage-day {
+  font-family: 'Special Elite', monospace;
+  font-size: clamp(9px, 2.6vw, 11px);
+  letter-spacing: 0.3em;
+  color: var(--brass-light);
+  text-transform: uppercase;
+}
+.stage-name {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(20px, 6.5vw, 32px);
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+
+.stage-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin: 16px 0;
+}
+@media (min-width: 600px) {
+  .stage-stats { grid-template-columns: repeat(4, 1fr); }
+}
+.stage-stat {
+  text-align: center;
+  padding: 12px 8px;
+  border: 0.5px solid var(--ink);
+  background: rgba(255,255,255,0.4);
+}
+.stage-stat-val {
+  font-family: 'Stardos Stencil', sans-serif;
+  font-size: clamp(15px, 4.5vw, 18px);
+  color: var(--red);
+  line-height: 1;
+}
+.stage-stat-lbl {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: 4px;
+}
+
+/* ============================================================ */
+/* WEATHER WIDGET                                               */
+/* ============================================================ */
+.weather {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(176,141,60,0.10);
+  border: 0.5px solid var(--brass);
+  border-left: 3px solid var(--brass);
+  margin: 16px 0;
+  font-size: 14px;
+}
+.weather-icon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.weather-info { flex: 1; min-width: 0; }
+.weather-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: block;
+  margin-bottom: 2px;
+}
+.weather-detail { color: var(--ink); }
+.weather-temp {
+  font-family: 'Stardos Stencil', sans-serif;
+  font-size: 20px;
+  color: var(--green-deep);
+  margin-right: 6px;
+}
+.weather-desc { font-style: italic; color: var(--green-deep); }
+.weather.loading .weather-icon { animation: pulse 1.4s ease-in-out infinite; }
+
+/* ============================================================ */
+/* STAGE COLUMNS                                                */
+/* ============================================================ */
+.stage-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+@media (min-width: 768px) {
+  .stage-cols { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+
+.col-title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  border-bottom: 0.5px solid var(--red);
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+}
+
+.route-list { list-style: none; }
+.route-list li {
+  position: relative;
+  padding: 8px 0 8px 22px;
+  font-size: 14.5px;
+  line-height: 1.4;
+  border-left: 0.5px dashed var(--brass);
+  margin-left: 8px;
+}
+.route-list li::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 11px;
+  width: 9px;
+  height: 9px;
+  background: var(--red);
+  border: 1.5px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.route-list li.start::before { background: var(--green); }
+.route-list li.end::before { background: var(--ink); }
+.route-list .wp-name { font-weight: 600; color: var(--ink); }
+.route-list .wp-note {
+  font-style: italic;
+  color: var(--green-deep);
+  font-size: 13px;
+  display: block;
+  margin-top: 1px;
+}
+
+.highlight {
+  background: rgba(176,141,60,0.12);
+  border: 0.5px solid var(--brass);
+  border-left: 3px solid var(--red);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.highlight-lbl {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: block;
+  margin-bottom: 3px;
+}
+.highlight-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.highlight-meta {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--green-deep);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+/* ============================================================ */
+/* LODGING / DIR CARDS                                          */
+/* ============================================================ */
+.lodging {
+  border: 1px solid var(--ink);
+  padding: 14px;
+  background: rgba(255,255,255,0.45);
+  position: relative;
+  margin-top: 8px;
+}
+@media (min-width: 480px) { .lodging { padding: 16px; } }
+
+.lodging-stamp {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  border: 1px solid var(--red);
+  padding: 3px 6px;
+  transform: rotate(4deg);
+  opacity: 0.85;
+}
+.lodging-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  padding-right: 56px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 480px) { .lodging-name { font-size: 16px; padding-right: 60px; } }
+
+.lodging-type {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+.lodging-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 3px 0;
+}
+.lodging-row .lbl {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  flex: 0 0 60px;
+}
+@media (min-width: 480px) { .lodging-row .lbl { flex: 0 0 70px; } }
+
+.lodging-row .val {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.lodging-row a {
+  color: var(--red);
+  border-bottom: 1px dotted var(--red);
+}
+.lodging-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 0.5px dotted var(--ink);
+}
+.lodging-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  border: 1px solid var(--ink);
+  background: var(--paper-light);
+  color: var(--ink);
+  text-decoration: none;
+  transition: all .15s ease;
+  min-height: 38px;
+  flex: 1;
+  min-width: 100px;
+}
+@media (min-width: 480px) {
+  .lodging-action { flex: 0 1 auto; min-width: 0; }
+}
+.lodging-action:hover { background: var(--ink); color: var(--paper); }
+.lodging-action:active { transform: scale(0.97); }
+.lodging-action svg { width: 13px; height: 13px; }
+
+/* ============================================================ */
+/* DIR GRID (Hotels & Tafeln, Museums)                          */
+/* ============================================================ */
+.dir-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 600px) { .dir-grid { grid-template-columns: 1fr 1fr; } }
+
+.dir-card {
+  position: relative;
+  border: 1px solid var(--ink);
+  padding: 14px 16px 14px 14px;
+  background: rgba(255,255,255,0.4);
+}
+@media (min-width: 480px) { .dir-card { padding: 16px 18px 16px 16px; } }
+
+.dir-card-num {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-family: 'Stardos Stencil', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--brass);
+  line-height: 1;
+}
+.dir-card-type {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 4px;
+}
+.dir-card-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-right: 40px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.dir-card-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  padding: 2px 0;
+}
+.dir-card-row .lbl {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  flex: 0 0 50px;
+}
+@media (min-width: 480px) { .dir-card-row .lbl { flex: 0 0 56px; } }
+
+.dir-card-row .val {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dir-card-row a {
+  color: var(--red);
+  border-bottom: 1px dotted var(--red);
+}
+.dir-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px dotted var(--ink);
+}
+.dir-card-actions .lodging-action {
+  font-size: 10px;
+  padding: 7px 10px;
+  min-height: 34px;
+  flex: 1;
+  min-width: 80px;
+}
+@media (min-width: 480px) {
+  .dir-card-actions .lodging-action { flex: 0 1 auto; min-width: 0; }
+}
+
+/* ============================================================ */
+/* MUSEUMS                                                      */
+/* ============================================================ */
+.museum-card {
+  position: relative;
+  border: 1px solid var(--ink);
+  padding: 16px 14px;
+  background: rgba(255,255,255,0.45);
+  margin-bottom: 16px;
+}
+@media (min-width: 480px) { .museum-card { padding: 18px; } }
+
+.museum-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-deep) 0%, var(--brass) 50%, var(--red) 100%);
+}
+.museum-tag {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--red);
+  padding: 3px 8px;
+}
+.museum-name {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(20px, 5.5vw, 26px);
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 6px;
+  padding-right: 100px;
+  overflow-wrap: anywhere;
+}
+.museum-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--green-deep);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px dotted var(--ink);
+}
+.museum-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px 16px;
+}
+@media (min-width: 600px) { .museum-grid { grid-template-columns: 1fr 1fr; gap: 6px 16px; } }
+
+.museum-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  padding: 3px 0;
+}
+.museum-row .lbl {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  flex: 0 0 80px;
+}
+@media (min-width: 480px) { .museum-row .lbl { flex: 0 0 96px; } }
+
+.museum-row .val {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.museum-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 0.5px dotted var(--ink);
+}
+.museum-actions .lodging-action {
+  flex: 1;
+  min-width: 110px;
+}
+@media (min-width: 480px) {
+  .museum-actions .lodging-action { flex: 0 1 auto; min-width: 0; }
+}
+
+/* ============================================================ */
+/* PRACTICAL                                                    */
+/* ============================================================ */
+.prac-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 600px) { .prac-grid { grid-template-columns: 1fr 1fr; } }
+
+.prac-block {
+  border: 1px solid var(--ink);
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.4);
+}
+@media (min-width: 480px) { .prac-block { padding: 16px 18px; } }
+.prac-block.full { grid-column: 1 / -1; }
+.prac-title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 0.5px solid var(--ink);
+}
+.emergency-list { list-style: none; }
+.emergency-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 0.5px dotted var(--brass);
+  font-size: 14.5px;
+}
+.emergency-list li:last-child { border: none; }
+.emergency-list .num {
+  font-family: 'Stardos Stencil', sans-serif;
+  font-size: 16px;
+  color: var(--green-deep);
+}
+.emergency-list a.num {
+  border-bottom: 1px dotted var(--red);
+  color: var(--red);
+}
+
+.tip-list { list-style: none; }
+.tip-list li {
+  position: relative;
+  padding: 6px 0 6px 22px;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.tip-list li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  color: var(--brass);
+  font-size: 12px;
+}
+.tip-list strong { font-weight: 700; color: var(--ink); }
+
+/* ============================================================ */
+/* FOOTER                                                       */
+/* ============================================================ */
+.footer {
+  background: var(--green-deep);
+  color: var(--paper);
+  padding: 64px 16px 40px 16px;
+  text-align: center;
+  margin-top: 64px;
+}
+.footer-emblem { display: flex; justify-content: center; margin-bottom: 24px; opacity: 0.85; }
+.footer-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(18px, 5vw, 24px);
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto 16px auto;
+  color: var(--brass-light);
+}
+.footer-quote::before, .footer-quote::after {
+  content: '"';
+  font-family: 'Anton', sans-serif;
+  font-size: 56px;
+  color: var(--brass);
+  line-height: 0.3;
+  display: block;
+}
+.footer-quote::after { transform: rotate(180deg); margin-top: 8px; }
+.footer-attr {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--brass-light);
+  margin-bottom: 32px;
+}
+.footer-bottom {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(28px, 8vw, 40px);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--paper);
+  margin-bottom: 8px;
+}
+.footer-sub {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+/* ============================================================ */
+/* ANIMATIONS                                                   */
+/* ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes spinIn {
+  from { opacity: 0; transform: rotate(-180deg) scale(0.5); }
+  to { opacity: 1; transform: rotate(0) scale(1); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================ */
+/* PRINT                                                        */
+/* ============================================================ */
+@media print {
+  .nav, .hero-cta, .lodging-actions, .dir-card-actions, .museum-actions { display: none !important; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- NAV                                                          -->
+<!-- ============================================================ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      Roadbook
+      <span class="accent">Okt 2026</span>
+    </div>
+    <div class="nav-links-wrap">
+      <div class="nav-links" id="navLinks">
+        <a href="#uebersicht">Übersicht</a>
+        <a href="#etappe-1">Mi · 14.10.</a>
+        <a href="#etappe-2">Do · 15.10.</a>
+        <a href="#etappe-3">Fr · 16.10.</a>
+        <a href="#etappe-4">Sa · 17.10.</a>
+        <a href="#hotels">Hotels</a>
+        <a href="#museen">Museen</a>
+        <a href="#praktisches">Notfall</a>
+      </div>
+    </div>
+    <a class="nav-pdf" href="Roadbook_Schwarzwald_Vogesen_14-17_Oktober_2026.pdf" download>
+      ↓ PDF
+    </a>
+  </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- HERO                                                         -->
+<!-- ============================================================ -->
+<header class="hero">
+  <div class="hero-frame">
+    <div class="checkered"></div>
+    <div class="tagline">— Privatissimum Rallye —</div>
+    <h1 class="hero-title">Roadbook</h1>
+    <div class="hero-subtitle">Schwarzwald · Vogesen · Elsass</div>
+
+    <div class="hero-emblem">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#1A1612" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#8B2A1F" stroke-width="0.8"/>
+        <g transform="translate(50,50)">
+          <polygon points="0,-38 4,-6 0,0 -4,-6" fill="#8B2A1F"/>
+          <polygon points="0,38 4,6 0,0 -4,6" fill="#1A1612" opacity="0.7"/>
+          <polygon points="-38,0 -6,-4 0,0 -6,4" fill="#1A1612" opacity="0.7"/>
+          <polygon points="38,0 6,-4 0,0 6,4" fill="#1A1612" opacity="0.7"/>
+          <circle r="3" fill="#B08D3C"/>
+        </g>
+        <text x="50" y="14" text-anchor="middle" font-family="Anton, sans-serif" font-size="7" fill="#1A1612">N</text>
+        <text x="50" y="92" text-anchor="middle" font-family="Anton, sans-serif" font-size="7" fill="#1A1612">S</text>
+        <text x="9" y="53" text-anchor="middle" font-family="Anton, sans-serif" font-size="7" fill="#1A1612">W</text>
+        <text x="91" y="53" text-anchor="middle" font-family="Anton, sans-serif" font-size="7" fill="#1A1612">E</text>
+      </svg>
+    </div>
+
+    <div class="hero-route">
+      Karlsruhe ↣ Sasbachwalden ↣ Riquewihr<br>↣ Aitern ↣ Karlsruhe
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">04</span><span class="stat-lbl">Etappen</span></div>
+      <div class="stat-item"><span class="stat-num">~900</span><span class="stat-lbl">Kilometer</span></div>
+      <div class="stat-item"><span class="stat-num">~20</span><span class="stat-lbl">Stunden</span></div>
+      <div class="stat-item"><span class="stat-num">03</span><span class="stat-lbl">Museen</span></div>
+    </div>
+
+    <div class="hero-meta">
+      <div>Mittwoch — Samstag</div>
+      <div class="hero-date">14. — 17. Oktober 2026</div>
+      <div class="hero-vehicle">Lotus Elise · & Friends</div>
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#uebersicht">↓ Tour erkunden</a>
+      <a class="btn" href="Roadbook_Schwarzwald_Vogesen_14-17_Oktober_2026.pdf" download>↓ PDF Roadbook</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- ÜBERSICHT                                                    -->
+<!-- ============================================================ -->
+<section class="section" id="uebersicht">
+  <div class="section-header">
+    <span class="section-eyebrow">Übersicht · Stages I–IV</span>
+    <span class="section-num">II</span>
+  </div>
+  <h2 class="section-title">Die Tour</h2>
+  <div class="section-subtitle">Vier Tage · Drei Länder · Eine Strasse</div>
+
+  <p class="overview-intro">
+    Eine kurvenreiche Schleife durch Schwarzwald, Elsass und Vogesen — gewählt für leere Landstraßen, kompromisslosen Asphalt und Aussichten, die einen Stop wert sind. Drei Auto-Museen unterbrechen den Fahrtag. Übernachtet wird in kleinen, charaktervollen Häusern; gegessen, wo es sich lohnt.
+  </p>
+
+  <div class="overview-totals">
+    <div class="stat-item"><span class="stat-num">~900</span><span class="stat-lbl">Kilometer</span></div>
+    <div class="stat-item"><span class="stat-num">~20h</span><span class="stat-lbl">Reine Fahrzeit</span></div>
+    <div class="stat-item"><span class="stat-num">85%</span><span class="stat-lbl">Landstraße</span></div>
+    <div class="stat-item"><span class="stat-num">3</span><span class="stat-lbl">Hotels</span></div>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map overview-map" id="map-overview" aria-label="Karte der Gesamtroute"></div>
+  </div>
+  <div class="map-caption">— Gesamtroute · 4 Etappen · ~900 km —</div>
+
+  <div class="stages-table-wrap" style="margin-top: 32px;">
+    <table class="stages-table">
+      <thead>
+        <tr>
+          <th style="width:40px;">№</th>
+          <th>Etappe</th>
+          <th>Über</th>
+          <th style="width:60px;">km</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr onclick="location.hash='#etappe-1'">
+          <td><span class="stage-cell-num">01</span></td>
+          <td><span class="stage-cell-route">Karlsruhe → Sasbachwalden</span><span class="stage-cell-day">Mi 14.10. · 4,5 h</span></td>
+          <td><span class="stage-cell-via">Murgtal · Rote Lache · Schwarzwaldhochstr.</span></td>
+          <td>~170</td>
+        </tr>
+        <tr onclick="location.hash='#etappe-2'">
+          <td><span class="stage-cell-num">02</span></td>
+          <td><span class="stage-cell-route">Sasbachwalden → Riquewihr</span><span class="stage-cell-day">Do 15.10. · 6 h</span></td>
+          <td><span class="stage-cell-via">Schiltach · Schramberg · Triberg · Münstertal</span></td>
+          <td>~270</td>
+        </tr>
+        <tr onclick="location.hash='#etappe-3'">
+          <td><span class="stage-cell-num">03</span></td>
+          <td><span class="stage-cell-route">Riquewihr → Aitern</span><span class="stage-cell-day">Fr 16.10. · 4,5 h</span></td>
+          <td><span class="stage-cell-via">Route des Crêtes · Grand Ballon · Mulhouse</span></td>
+          <td>~220</td>
+        </tr>
+        <tr onclick="location.hash='#etappe-4'">
+          <td><span class="stage-cell-num">04</span></td>
+          <td><span class="stage-cell-route">Aitern → Karlsruhe</span><span class="stage-cell-day">Sa 17.10. · 5 h</span></td>
+          <td><span class="stage-cell-via">Belchen · Schluchsee · Titisee · Kandel</span></td>
+          <td>~240</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ETAPPE 1                                                     -->
+<!-- ============================================================ -->
+<section class="section stage" id="etappe-1" data-stage="1">
+  <div class="stage-banner">
+    <div class="stage-banner-num">01</div>
+    <div class="stage-banner-text">
+      <div class="stage-day">Stage One · Mittwoch · 14. Oktober</div>
+      <div class="stage-name">Karlsruhe → Sasbachwalden</div>
+    </div>
+  </div>
+
+  <div class="stage-stats">
+    <div class="stage-stat"><div class="stage-stat-val">~170</div><div class="stage-stat-lbl">Kilometer</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">4,5 h</div><div class="stage-stat-lbl">Fahrzeit</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">11:00</div><div class="stage-stat-lbl">Abfahrt</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">~17:30</div><div class="stage-stat-lbl">Ankunft</div></div>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map" id="map-1" aria-label="Karte Etappe 1"></div>
+  </div>
+
+  <div class="weather loading" data-weather="1" data-lat="48.55" data-lng="8.08" data-date="2026-10-14">
+    <div class="weather-icon">⛅</div>
+    <div class="weather-info">
+      <span class="weather-label">Wetter · Sasbachwalden · 14. Oktober</span>
+      <span class="weather-detail">Lade Forecast …</span>
+    </div>
+  </div>
+
+  <div class="stage-cols">
+    <div>
+      <div class="col-title">— Die Route —</div>
+      <ul class="route-list">
+        <li class="start"><span class="wp-name">netzstrategen Büro · Alter Schlachthof</span><span class="wp-note">Treffpunkt &amp; Kaffee · Abfahrt 11:00</span></li>
+        <li><span class="wp-name">Ettlingen → Schöllbronn → Freiolsheim</span><span class="wp-note">Erste Höhenstrecken auf 480 m</span></li>
+        <li><span class="wp-name">Gaggenau</span><span class="wp-note">Optional: Unimog Museum + Lunch (1,5 h)</span></li>
+        <li><span class="wp-name">Murgtal · Forbach · Rote Lache (L564)</span><span class="wp-note">Biker-Klassiker, perfekter Asphalt</span></li>
+        <li><span class="wp-name">Schwarzwaldhochstr. (B500) · Mummelsee</span><span class="wp-note">Foto-Stop am Karsee</span></li>
+        <li><span class="wp-name">Allerheiligen Wasserfälle</span><span class="wp-note">20-min Spaziergang · Klosterruine + Kaskaden</span></li>
+        <li class="end"><span class="wp-name">Sasbachwalden · Hotel Engel</span><span class="wp-note">Ankunft ~17:30</span></li>
+      </ul>
+    </div>
+    <div>
+      <div class="col-title">— Highlights —</div>
+      <div class="highlight">
+        <span class="highlight-lbl">Strecke</span>
+        <div class="highlight-name">Rote Lache</div>
+        <div class="highlight-meta">L564 zwischen Forbach und Hundsbach. Eine der kurvigsten Verbindungsstraßen im Nordschwarzwald.</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Pause</span>
+        <div class="highlight-name">Allerheiligen</div>
+        <div class="highlight-meta">Klosterruine aus dem 12. Jh. mit Wasserfall-Kaskaden. Kostenlos. Toilette am Parkplatz.</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Optional</span>
+        <div class="highlight-name">Unimog Museum</div>
+        <div class="highlight-meta">Mi 10–17 Uhr · Eintritt 11 € · Restaurant vor Ort. Bewertung 4,6 ★</div>
+      </div>
+
+      <div class="col-title" style="margin-top:24px;">— Quartier —</div>
+      <div class="lodging">
+        <div class="lodging-stamp">Etappe I</div>
+        <div class="lodging-name">Hotel Engel</div>
+        <div class="lodging-type">Sasbachwalden · seit 1764</div>
+        <div class="lodging-row"><span class="lbl">Adresse</span><span class="val">Talstraße 14, 77887 Sasbachwalden</span></div>
+        <div class="lodging-row"><span class="lbl">Telefon</span><span class="val"><a href="tel:+4978413000">+49 7841 3000</a></span></div>
+        <div class="lodging-row"><span class="lbl">Web</span><span class="val"><a href="https://engel-sasbachwalden.de" target="_blank" rel="noopener">engel-sasbachwalden.de</a></span></div>
+        <div class="lodging-row"><span class="lbl">Note</span><span class="val">4,8 ★ · Restaurant: badisch, gehoben</span></div>
+        <div class="lodging-actions">
+          <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Hotel+Engel+Sasbachwalden+Talstra%C3%9Fe+14" target="_blank" rel="noopener">↗ Google Maps</a>
+          <a class="lodging-action" href="tel:+4978413000">☎ Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ETAPPE 2                                                     -->
+<!-- ============================================================ -->
+<section class="section stage" id="etappe-2" data-stage="2">
+  <div class="stage-banner">
+    <div class="stage-banner-num">02</div>
+    <div class="stage-banner-text">
+      <div class="stage-day">Stage Two · Donnerstag · 15. Oktober</div>
+      <div class="stage-name">Sasbachwalden → Riquewihr</div>
+    </div>
+  </div>
+
+  <div class="stage-stats">
+    <div class="stage-stat"><div class="stage-stat-val">~270</div><div class="stage-stat-lbl">Kilometer</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">6 h</div><div class="stage-stat-lbl">Fahrzeit</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">09:00</div><div class="stage-stat-lbl">Abfahrt</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">~18:00</div><div class="stage-stat-lbl">Ankunft</div></div>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map" id="map-2" aria-label="Karte Etappe 2"></div>
+  </div>
+
+  <div class="weather loading" data-weather="2" data-lat="48.17" data-lng="7.30" data-date="2026-10-15">
+    <div class="weather-icon">⛅</div>
+    <div class="weather-info">
+      <span class="weather-label">Wetter · Riquewihr · 15. Oktober</span>
+      <span class="weather-detail">Lade Forecast …</span>
+    </div>
+  </div>
+
+  <div class="stage-cols">
+    <div>
+      <div class="col-title">— Die Route —</div>
+      <ul class="route-list">
+        <li class="start"><span class="wp-name">Hotel Engel · Sasbachwalden</span><span class="wp-note">Frühstart nach Frühstück · 09:00</span></li>
+        <li><span class="wp-name">Schiltach</span><span class="wp-note">Fachwerk-Städtchen · Durchfahrt</span></li>
+        <li><span class="wp-name">Schramberg · Autosammlung Steim</span><span class="wp-note">130 Oldtimer · ca. 1–1,5 h</span></li>
+        <li><span class="wp-name">Triberg → Furtwangen</span><span class="wp-note">Mittelschwarzwald-Höhen, kurvig</span></li>
+        <li><span class="wp-name">St. Märgen</span><span class="wp-note">Lunch im Klostergasthof</span></li>
+        <li><span class="wp-name">Münstertal · Rheinquerung Breisach</span><span class="wp-note">Übergang nach Frankreich</span></li>
+        <li><span class="wp-name">Col du Bonhomme</span><span class="wp-note">Vogesen-Eingang von Osten</span></li>
+        <li class="end"><span class="wp-name">Riquewihr · Hôtel A l'Oriel</span><span class="wp-note">Ankunft ~18:00</span></li>
+      </ul>
+    </div>
+    <div>
+      <div class="col-title">— Highlights —</div>
+      <div class="highlight">
+        <span class="highlight-lbl">Auto-Museum</span>
+        <div class="highlight-name">Autosammlung Steim</div>
+        <div class="highlight-meta">130 Fahrzeuge: Maybach Zeppelin '32, BMW M1, Mercedes 500K, F1-Boliden. 12 €. 4,7 ★</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Strecke</span>
+        <div class="highlight-name">B500 → St. Märgen</div>
+        <div class="highlight-meta">Höhen-Etappe durch den mittleren Schwarzwald. Wenig Verkehr unter der Woche.</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Pass</span>
+        <div class="highlight-name">Col du Bonhomme</div>
+        <div class="highlight-meta">949 m · Klassische Vogesenanfahrt von Ost. Kaum befahren.</div>
+      </div>
+
+      <div class="col-title" style="margin-top:24px;">— Quartier —</div>
+      <div class="lodging">
+        <div class="lodging-stamp">Etappe II</div>
+        <div class="lodging-name">Hôtel A l'Oriel</div>
+        <div class="lodging-type">Riquewihr · Boutique Médiéval</div>
+        <div class="lodging-row"><span class="lbl">Adresse</span><span class="val">3 Rue des Écuries, 68340 Riquewihr</span></div>
+        <div class="lodging-row"><span class="lbl">Telefon</span><span class="val"><a href="tel:+33389490313">+33 3 89 49 03 13</a></span></div>
+        <div class="lodging-row"><span class="lbl">Web</span><span class="val"><a href="https://hotel-oriel.com" target="_blank" rel="noopener">hotel-oriel.com</a></span></div>
+        <div class="lodging-row"><span class="lbl">Note</span><span class="val">Privat-Parking 2 €/Tag</span></div>
+        <div class="lodging-actions">
+          <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=H%C3%B4tel+A+l%27Oriel+Riquewihr" target="_blank" rel="noopener">↗ Google Maps</a>
+          <a class="lodging-action" href="tel:+33389490313">☎ Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ETAPPE 3                                                     -->
+<!-- ============================================================ -->
+<section class="section stage" id="etappe-3" data-stage="3">
+  <div class="stage-banner">
+    <div class="stage-banner-num">03</div>
+    <div class="stage-banner-text">
+      <div class="stage-day">Stage Three · Freitag · 16. Oktober</div>
+      <div class="stage-name">Riquewihr → Aitern</div>
+    </div>
+  </div>
+
+  <div class="stage-stats">
+    <div class="stage-stat"><div class="stage-stat-val">~220</div><div class="stage-stat-lbl">Kilometer</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">4,5 h</div><div class="stage-stat-lbl">Fahrzeit</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">09:00</div><div class="stage-stat-lbl">Abfahrt</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">~17:00</div><div class="stage-stat-lbl">Ankunft</div></div>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map" id="map-3" aria-label="Karte Etappe 3"></div>
+  </div>
+
+  <div class="weather loading" data-weather="3" data-lat="47.81" data-lng="7.83" data-date="2026-10-16">
+    <div class="weather-icon">⛅</div>
+    <div class="weather-info">
+      <span class="weather-label">Wetter · Aitern · 16. Oktober</span>
+      <span class="weather-detail">Lade Forecast …</span>
+    </div>
+  </div>
+
+  <div class="stage-cols">
+    <div>
+      <div class="col-title">— Die Route —</div>
+      <ul class="route-list">
+        <li class="start"><span class="wp-name">Riquewihr</span><span class="wp-note">Frühstück + Dorfspaziergang · 09:00</span></li>
+        <li><span class="wp-name">Col de la Schlucht</span><span class="wp-note">Einstieg Route des Crêtes (1.139 m)</span></li>
+        <li><span class="wp-name">Route des Crêtes</span><span class="wp-note">Hohneck · Markstein · Vogesen-Höhenstraße</span></li>
+        <li><span class="wp-name">Grand Ballon</span><span class="wp-note">Lunch im Berggasthof · Walk zum Memorial</span></li>
+        <li><span class="wp-name">Mulhouse · Cité de l'Automobile</span><span class="wp-note">Schlumpf-Sammlung · ~2 h · Highlight</span></li>
+        <li><span class="wp-name">Rheinquerung · Hochschwarzwald</span><span class="wp-note">via A36 / B-Straßen</span></li>
+        <li class="end"><span class="wp-name">Aitern · Belchenhotel</span><span class="wp-note">Auf 1.100 m · Ankunft ~17:00</span></li>
+      </ul>
+    </div>
+    <div>
+      <div class="col-title">— Highlights —</div>
+      <div class="highlight">
+        <span class="highlight-lbl">Auto-Museum</span>
+        <div class="highlight-name">Schlumpf-Sammlung</div>
+        <div class="highlight-meta">Größte Auto-Sammlung der Welt. 450+ Fahrzeuge, 100+ Bugatti, drei Bugatti Royale. 17 €. 4,6 ★</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Strecke</span>
+        <div class="highlight-name">Route des Crêtes</div>
+        <div class="highlight-meta">Die Vogesen-Höhenstraße schlechthin. Im 1. Weltkrieg als Versorgungsachse gebaut.</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Gipfel</span>
+        <div class="highlight-name">Grand Ballon</div>
+        <div class="highlight-meta">1.424 m · Höchster Vogesen-Gipfel. Bei Klarheit Blick bis Mont Blanc. 4,7 ★</div>
+      </div>
+
+      <div class="col-title" style="margin-top:24px;">— Quartier —</div>
+      <div class="lodging">
+        <div class="lodging-stamp">Etappe III</div>
+        <div class="lodging-name">Belchenhotel Jägerstüble</div>
+        <div class="lodging-type">Aitern · 1.100 m · familiengeführt</div>
+        <div class="lodging-row"><span class="lbl">Adresse</span><span class="val">Obermulten 3, 79677 Aitern</span></div>
+        <div class="lodging-row"><span class="lbl">Telefon</span><span class="val"><a href="tel:+497673888180">+49 7673 888180</a></span></div>
+        <div class="lodging-row"><span class="lbl">Web</span><span class="val"><a href="https://belchenhotel.de" target="_blank" rel="noopener">belchenhotel.de</a></span></div>
+        <div class="lodging-row"><span class="lbl">Note</span><span class="val">4,8 ★ · Spa, Pool, Sauna · Halbpension empfohlen</span></div>
+        <div class="lodging-actions">
+          <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Belchenhotel+J%C3%A4gerst%C3%BCble+Aitern+Obermulten" target="_blank" rel="noopener">↗ Google Maps</a>
+          <a class="lodging-action" href="tel:+497673888180">☎ Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ETAPPE 4                                                     -->
+<!-- ============================================================ -->
+<section class="section stage" id="etappe-4" data-stage="4">
+  <div class="stage-banner">
+    <div class="stage-banner-num">04</div>
+    <div class="stage-banner-text">
+      <div class="stage-day">Stage Four · Samstag · 17. Oktober</div>
+      <div class="stage-name">Aitern → Karlsruhe</div>
+    </div>
+  </div>
+
+  <div class="stage-stats">
+    <div class="stage-stat"><div class="stage-stat-val">~240</div><div class="stage-stat-lbl">Kilometer</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">5 h</div><div class="stage-stat-lbl">Fahrzeit</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">09:30</div><div class="stage-stat-lbl">Abfahrt</div></div>
+    <div class="stage-stat"><div class="stage-stat-val">~17:00</div><div class="stage-stat-lbl">Ankunft</div></div>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map" id="map-4" aria-label="Karte Etappe 4"></div>
+  </div>
+
+  <div class="weather loading" data-weather="4" data-lat="49.0" data-lng="8.40" data-date="2026-10-17">
+    <div class="weather-icon">⛅</div>
+    <div class="weather-info">
+      <span class="weather-label">Wetter · Karlsruhe · 17. Oktober</span>
+      <span class="weather-detail">Lade Forecast …</span>
+    </div>
+  </div>
+
+  <div class="stage-cols">
+    <div>
+      <div class="col-title">— Die Route —</div>
+      <ul class="route-list">
+        <li class="start"><span class="wp-name">Belchenhotel</span><span class="wp-note">Abfahrt nach Frühstück · 09:30</span></li>
+        <li><span class="wp-name">Belchen Gipfel</span><span class="wp-note">Seilbahn + 15-min Walk · Schwarzwald-Aussicht</span></li>
+        <li><span class="wp-name">Schluchsee</span><span class="wp-note">Foto-Stop am See</span></li>
+        <li><span class="wp-name">Titisee</span><span class="wp-note">Lunch-Stop</span></li>
+        <li><span class="wp-name">Glottertal · Kandel-Höhenstraße</span><span class="wp-note">Letzter kurviger Abschnitt · 1.243 m</span></li>
+        <li><span class="wp-name">Schwarzwaldtäler nordwärts</span><span class="wp-note">via B33 · B294 · entspannte Heimkehr</span></li>
+        <li class="end"><span class="wp-name">Karlsruhe · netzstrategen Büro</span><span class="wp-note">Ankunft ~17:00 · Münchner direkt auf A8</span></li>
+      </ul>
+    </div>
+    <div>
+      <div class="col-title">— Highlights —</div>
+      <div class="highlight">
+        <span class="highlight-lbl">Aussicht</span>
+        <div class="highlight-name">Belchen Gipfel</div>
+        <div class="highlight-meta">1.414 m · Beste Schwarzwald-Aussicht. Bei Klarheit Sicht bis zu den Alpen.</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Strecke</span>
+        <div class="highlight-name">Kandel-Höhenstr.</div>
+        <div class="highlight-meta">Steile Auffahrt aus dem Glottertal. Klassiker mit unzähligen Kehren — als Krönung am letzten Tag.</div>
+      </div>
+      <div class="highlight">
+        <span class="highlight-lbl">Pause</span>
+        <div class="highlight-name">Titisee</div>
+        <div class="highlight-meta">Lunch-Stop · Spaziergang am See möglich (touristisch, aber praktisch)</div>
+      </div>
+
+      <div class="col-title" style="margin-top:24px;">— Heimkehr —</div>
+      <div class="lodging">
+        <div class="lodging-stamp">Finale</div>
+        <div class="lodging-name">netzstrategen Büro</div>
+        <div class="lodging-type">Karlsruhe · Alter Schlachthof</div>
+        <div class="lodging-row"><span class="lbl">Adresse</span><span class="val">Alter Schlachthof 47, 76131 Karlsruhe</span></div>
+        <div class="lodging-row"><span class="lbl">Notiz</span><span class="val">Heimreise nach München: A8 ab Karlsruhe · ca. 3 h.</span></div>
+        <div class="lodging-actions">
+          <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Alter+Schlachthof+47+Karlsruhe" target="_blank" rel="noopener">↗ Google Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- HOTELS & TAFELN                                              -->
+<!-- ============================================================ -->
+<section class="section" id="hotels">
+  <div class="section-header">
+    <span class="section-eyebrow">Verzeichnis · Quartier &amp; Tafel</span>
+    <span class="section-num">VIII</span>
+  </div>
+  <h2 class="section-title">Hotels &amp; Tafeln</h2>
+  <div class="section-subtitle">Drei Übernachtungen · Die wichtigsten Tische</div>
+
+  <div class="dir-grid">
+    <div class="dir-card">
+      <div class="dir-card-num">I</div>
+      <div class="dir-card-type">Hotel · Etappe 1</div>
+      <div class="dir-card-name">Hotel Engel Sasbachwalden</div>
+      <div class="dir-card-row"><span class="lbl">Adresse</span><span class="val">Talstraße 14, 77887</span></div>
+      <div class="dir-card-row"><span class="lbl">Tel.</span><span class="val"><a href="tel:+4978413000">+49 7841 3000</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Web</span><span class="val"><a href="https://engel-sasbachwalden.de" target="_blank" rel="noopener">engel-sasbachwalden.de</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Haus von 1764 · 4,8 ★</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Hotel+Engel+Sasbachwalden" target="_blank" rel="noopener">↗ Maps</a>
+        <a class="lodging-action" href="tel:+4978413000">☎</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">II</div>
+      <div class="dir-card-type">Hotel · Etappe 2</div>
+      <div class="dir-card-name">Hôtel A l'Oriel</div>
+      <div class="dir-card-row"><span class="lbl">Adresse</span><span class="val">3 Rue des Écuries, 68340 Riquewihr</span></div>
+      <div class="dir-card-row"><span class="lbl">Tel.</span><span class="val"><a href="tel:+33389490313">+33 3 89 49 03 13</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Web</span><span class="val"><a href="https://hotel-oriel.com" target="_blank" rel="noopener">hotel-oriel.com</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Boutique medieval</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=H%C3%B4tel+A+l%27Oriel+Riquewihr" target="_blank" rel="noopener">↗ Maps</a>
+        <a class="lodging-action" href="tel:+33389490313">☎</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">III</div>
+      <div class="dir-card-type">Hotel · Etappe 3</div>
+      <div class="dir-card-name">Belchenhotel Jägerstüble</div>
+      <div class="dir-card-row"><span class="lbl">Adresse</span><span class="val">Obermulten 3, 79677 Aitern</span></div>
+      <div class="dir-card-row"><span class="lbl">Tel.</span><span class="val"><a href="tel:+497673888180">+49 7673 888180</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Web</span><span class="val"><a href="https://belchenhotel.de" target="_blank" rel="noopener">belchenhotel.de</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">1.100 m · Spa &amp; Pool · 4,8 ★</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Belchenhotel+Aitern" target="_blank" rel="noopener">↗ Maps</a>
+        <a class="lodging-action" href="tel:+497673888180">☎</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">IV</div>
+      <div class="dir-card-type">Lunch · Etappe 1</div>
+      <div class="dir-card-name">Unimog Museum Bistro</div>
+      <div class="dir-card-row"><span class="lbl">Adresse</span><span class="val">An der B462, 76571 Gaggenau</span></div>
+      <div class="dir-card-row"><span class="lbl">Tel.</span><span class="val"><a href="tel:+497225981310">+49 7225 981310</a></span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Optional · zünftig-deftig</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Unimog+Museum+Gaggenau" target="_blank" rel="noopener">↗ Maps</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">V</div>
+      <div class="dir-card-type">Lunch · Etappe 2</div>
+      <div class="dir-card-name">Klostergasthof St. Märgen</div>
+      <div class="dir-card-row"><span class="lbl">Adresse</span><span class="val">St. Märgen, Hochschwarzwald</span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Vor Ort verifizieren · Vorausreservierung sinnvoll</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Klostergasthof+St.+M%C3%A4rgen" target="_blank" rel="noopener">↗ Maps</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">VI</div>
+      <div class="dir-card-type">Dinner · Etappe 2</div>
+      <div class="dir-card-name">Au Trotthus / Sarment d'Or</div>
+      <div class="dir-card-row"><span class="lbl">Ort</span><span class="val">Riquewihr · zentral</span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Elsässische Spitzenküche · <strong>Reservierung dringend</strong></span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Au+Trotthus+Riquewihr" target="_blank" rel="noopener">↗ Au Trotthus</a>
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Sarment+d%27Or+Riquewihr" target="_blank" rel="noopener">↗ Sarment d'Or</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">VII</div>
+      <div class="dir-card-type">Lunch · Etappe 3</div>
+      <div class="dir-card-name">Berggasthof Grand Ballon</div>
+      <div class="dir-card-row"><span class="lbl">Ort</span><span class="val">Grand Ballon, Vogesen · 1.424 m</span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Berghütten-Küche · Tarte flambée &amp; Co.</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Grand+Ballon+Vosges" target="_blank" rel="noopener">↗ Maps</a>
+      </div>
+    </div>
+
+    <div class="dir-card">
+      <div class="dir-card-num">VIII</div>
+      <div class="dir-card-type">Dinner · Etappe 3</div>
+      <div class="dir-card-name">Belchenhotel-Restaurant</div>
+      <div class="dir-card-row"><span class="lbl">Ort</span><span class="val">Aitern · Hotel-Restaurant</span></div>
+      <div class="dir-card-row"><span class="lbl">Notiz</span><span class="val">Halbpension empfohlen · einzige Option auf 1.100 m</span></div>
+      <div class="dir-card-actions">
+        <a class="lodging-action" href="tel:+497673888180">☎ Anrufen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- MUSEEN                                                       -->
+<!-- ============================================================ -->
+<section class="section" id="museen">
+  <div class="section-header">
+    <span class="section-eyebrow">Drei Auto-Stationen</span>
+    <span class="section-num">IX</span>
+  </div>
+  <h2 class="section-title">Die Museen</h2>
+  <div class="section-subtitle">Pflicht-Stops für Petrolheads</div>
+
+  <div class="museum-card">
+    <div class="museum-tag">Etappe 1 · Mi</div>
+    <div class="museum-name">Unimog Museum</div>
+    <div class="museum-tagline">Geländewagen-Pioniere · Mercedes-Benz seit 1953 · Test-Track inklusive</div>
+    <div class="museum-grid">
+      <div class="museum-row"><span class="lbl">Standort</span><span class="val">Gaggenau, Murgtal</span></div>
+      <div class="museum-row"><span class="lbl">Öffnung</span><span class="val">Di–So · 10:00 – 17:00</span></div>
+      <div class="museum-row"><span class="lbl">Eintritt</span><span class="val">11 € · Mitfahrt extra</span></div>
+      <div class="museum-row"><span class="lbl">Telefon</span><span class="val"><a href="tel:+497225981310">+49 7225 981310</a></span></div>
+      <div class="museum-row"><span class="lbl">Bewertung</span><span class="val">4,6 ★ · 3.200+ Reviews</span></div>
+      <div class="museum-row"><span class="lbl">Status</span><span class="val">Optional · Lunch-Stop möglich</span></div>
+    </div>
+    <div class="museum-actions">
+      <a class="lodging-action" href="https://www.unimog-museum.com" target="_blank" rel="noopener">↗ Website</a>
+      <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Unimog+Museum+Gaggenau" target="_blank" rel="noopener">↗ Google Maps</a>
+    </div>
+  </div>
+
+  <div class="museum-card">
+    <div class="museum-tag">Etappe 2 · Do</div>
+    <div class="museum-name">Autosammlung Steim</div>
+    <div class="museum-tagline">Privatsammlung der Familie Steim · Querschnitt durch 115 Jahre Automobilgeschichte</div>
+    <div class="museum-grid">
+      <div class="museum-row"><span class="lbl">Standort</span><span class="val">Schramberg, Schwarzwald</span></div>
+      <div class="museum-row"><span class="lbl">Öffnung</span><span class="val">Di–So · 10:00 – 18:00</span></div>
+      <div class="museum-row"><span class="lbl">Eintritt</span><span class="val">12 € · Kombiticket möglich</span></div>
+      <div class="museum-row"><span class="lbl">Telefon</span><span class="val"><a href="tel:+4974229790901">+49 7422 9790901</a></span></div>
+      <div class="museum-row"><span class="lbl">Highlights</span><span class="val">Maybach Zeppelin '32 · BMW M1 · 500K · F1</span></div>
+      <div class="museum-row"><span class="lbl">Dauer</span><span class="val">1 – 1,5 h</span></div>
+    </div>
+    <div class="museum-actions">
+      <a class="lodging-action" href="https://www.autosammlung-steim.de" target="_blank" rel="noopener">↗ Website</a>
+      <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Autosammlung+Steim+Schramberg" target="_blank" rel="noopener">↗ Google Maps</a>
+    </div>
+  </div>
+
+  <div class="museum-card">
+    <div class="museum-tag">Etappe 3 · Fr</div>
+    <div class="museum-name">Cité de l'Automobile</div>
+    <div class="museum-tagline">Musée National · Collection Schlumpf · Größte Autosammlung der Welt</div>
+    <div class="museum-grid">
+      <div class="museum-row"><span class="lbl">Standort</span><span class="val">Mulhouse, Elsass</span></div>
+      <div class="museum-row"><span class="lbl">Öffnung</span><span class="val">Mo–So · 10:00 – 18:00</span></div>
+      <div class="museum-row"><span class="lbl">Eintritt</span><span class="val">17 € · Online buchbar</span></div>
+      <div class="museum-row"><span class="lbl">Telefon</span><span class="val"><a href="tel:+33389332321">+33 3 89 33 23 21</a></span></div>
+      <div class="museum-row"><span class="lbl">Highlights</span><span class="val">450+ Autos · 100+ Bugatti · 3 Royale</span></div>
+      <div class="museum-row"><span class="lbl">Dauer</span><span class="val">2 h Minimum · Highlight des Trips</span></div>
+    </div>
+    <div class="museum-actions">
+      <a class="lodging-action" href="https://www.citedelautomobile.com" target="_blank" rel="noopener">↗ Tickets</a>
+      <a class="lodging-action" href="https://www.google.com/maps/search/?api=1&query=Cit%C3%A9+de+l%27Automobile+Mulhouse" target="_blank" rel="noopener">↗ Google Maps</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PRAKTISCHES                                                  -->
+<!-- ============================================================ -->
+<section class="section" id="praktisches">
+  <div class="section-header">
+    <span class="section-eyebrow">Praktisches · Notfall · Tipps</span>
+    <span class="section-num">X</span>
+  </div>
+  <h2 class="section-title">Praktisches</h2>
+  <div class="section-subtitle">Falls etwas dazwischenkommt</div>
+
+  <div class="prac-grid">
+    <div class="prac-block">
+      <div class="prac-title">— Notfall · Deutschland —</div>
+      <ul class="emergency-list">
+        <li><span>Polizei</span><a class="num" href="tel:110">110</a></li>
+        <li><span>Feuerwehr / Rettung</span><a class="num" href="tel:112">112</a></li>
+        <li><span>ADAC Pannenhilfe</span><a class="num" href="tel:+498922222">089 222 222</a></li>
+        <li><span>Giftnotruf BW</span><a class="num" href="tel:+4976119240">0761 19240</a></li>
+      </ul>
+    </div>
+
+    <div class="prac-block">
+      <div class="prac-title">— Notfall · Frankreich —</div>
+      <ul class="emergency-list">
+        <li><span>Notruf (allg.)</span><a class="num" href="tel:112">112</a></li>
+        <li><span>Police</span><a class="num" href="tel:17">17</a></li>
+        <li><span>SAMU (Rettung)</span><a class="num" href="tel:15">15</a></li>
+        <li><span>Pompiers</span><a class="num" href="tel:18">18</a></li>
+      </ul>
+    </div>
+
+    <div class="prac-block">
+      <div class="prac-title">— Wetter &amp; Pässe —</div>
+      <ul class="tip-list">
+        <li>Mitte Oktober: 8–18 °C tagsüber, auf 1.400 m oft 5–10 °C kühler. Mütze, Handschuhe, Schal mitnehmen.</li>
+        <li>Talnebel typisch bis ~10 Uhr, danach meist klar — Frühstart nur lohnt sich auf Höhen.</li>
+        <li>Pässe alle offen, Schneegefahr unwahrscheinlich. Verdeck-Backup für Lotus dabei.</li>
+        <li>Aktuell: <a href="https://www.bergfex.de" target="_blank" rel="noopener">bergfex.de</a> · <a href="https://meteofrance.fr" target="_blank" rel="noopener">meteofrance.fr</a></li>
+      </ul>
+    </div>
+
+    <div class="prac-block">
+      <div class="prac-title">— Tank &amp; Strom —</div>
+      <ul class="tip-list">
+        <li>In FR günstiger als DE — Tankstopp idealerweise im Elsass (Mulhouse, Colmar).</li>
+        <li>Sasbachwalden, St. Märgen, Aitern: kleine Orte, Vorab-Tank empfohlen.</li>
+        <li>E-Fahrer: Belchenhotel hat Lader · Tiefgarage Riquewihr nahe Hôtel A l'Oriel.</li>
+        <li>Vignette FR nicht nötig auf Landstraßen · Schweiz wird nicht gequert.</li>
+      </ul>
+    </div>
+
+    <div class="prac-block full">
+      <div class="prac-title">— Vor der Tour: To-Do —</div>
+      <ul class="tip-list">
+        <li><strong>Hotels reservieren</strong> — alle drei Häuser. Im Elsass sind Wochenenden im Oktober oft voll.</li>
+        <li><strong>Restaurants reservieren</strong> — besonders Au Trotthus / Sarment d'Or in Riquewihr (Donnerstagabend).</li>
+        <li><strong>Schlumpf-Tickets vorab</strong> — citedelautomobile.com · vermeidet Schlange am Freitagnachmittag.</li>
+        <li><strong>Lotus check</strong> — Reifen, Öl, Bremsen. 900 km Kurven sind anspruchsvoll. Verdeck mitnehmen.</li>
+        <li><strong>Roadbook ausdrucken</strong> — eines pro Auto. Handy-Akku im Schwarzwald-Funkloch keine Hilfe.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                       -->
+<!-- ============================================================ -->
+<footer class="footer">
+  <div class="footer-emblem">
+    <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#B08D3C" stroke-width="1.2"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4B870" stroke-width="0.5"/>
+      <g transform="translate(50,50)">
+        <polygon points="0,-34 4,-5 0,0 -4,-5" fill="#D4B870"/>
+        <polygon points="0,34 4,5 0,0 -4,5" fill="#B08D3C"/>
+      </g>
+    </svg>
+  </div>
+  <div class="footer-quote">
+    Das Schöne am Autofahren ist nicht, irgendwo anzukommen. Sondern auf dem Weg dorthin nicht zu denken.
+  </div>
+  <div class="footer-attr">— irgendwo zwischen Belchen und Grand Ballon —</div>
+  <div class="footer-bottom">Buona Strada</div>
+  <div class="footer-sub">Privatissimum · Oktober MMXXVI</div>
+</footer>
+
+<!-- ============================================================ -->
+<!-- DATA & SCRIPT                                                -->
+<!-- ============================================================ -->
+<script>
+'use strict';
+
+// ============================================================
+// STAGE DATA — waypoints with coords
+// ============================================================
+const STAGES = {
+  1: {
+    color: '#8B2A1F',
+    waypoints: [
+      { lat: 49.0069, lng: 8.4037, name: 'Karlsruhe', note: 'Start · 11:00', type: 'start' },
+      { lat: 48.9407, lng: 8.4044, name: 'Ettlingen' },
+      { lat: 48.8728, lng: 8.4719, name: 'Schöllbronn' },
+      { lat: 48.8050, lng: 8.4458, name: 'Freiolsheim' },
+      { lat: 48.8025, lng: 8.3225, name: 'Gaggenau', note: 'Unimog Museum', type: 'museum' },
+      { lat: 48.6817, lng: 8.3614, name: 'Forbach' },
+      { lat: 48.6017, lng: 8.2050, name: 'Mummelsee', note: 'Foto-Stop' },
+      { lat: 48.5547, lng: 8.2256, name: 'Allerheiligen', note: 'Wasserfälle' },
+      { lat: 48.5494, lng: 8.0847, name: 'Sasbachwalden', note: 'Hotel Engel', type: 'end' }
+    ]
+  },
+  2: {
+    color: '#1B3A2C',
+    waypoints: [
+      { lat: 48.5494, lng: 8.0847, name: 'Sasbachwalden', note: 'Start · 09:00', type: 'start' },
+      { lat: 48.2911, lng: 8.3406, name: 'Schiltach' },
+      { lat: 48.2261, lng: 8.3856, name: 'Schramberg', note: 'Autosammlung Steim', type: 'museum' },
+      { lat: 48.1300, lng: 8.2306, name: 'Triberg' },
+      { lat: 48.0517, lng: 8.2092, name: 'Furtwangen' },
+      { lat: 48.0211, lng: 8.0931, name: 'St. Märgen', note: 'Lunch' },
+      { lat: 47.8589, lng: 7.7836, name: 'Münstertal' },
+      { lat: 48.0314, lng: 7.5825, name: 'Breisach', note: 'Rheinquerung' },
+      { lat: 48.1547, lng: 7.0939, name: 'Col du Bonhomme', note: '949 m' },
+      { lat: 48.1672, lng: 7.2972, name: 'Riquewihr', note: 'Hôtel A l\'Oriel', type: 'end' }
+    ]
+  },
+  3: {
+    color: '#B08D3C',
+    waypoints: [
+      { lat: 48.1672, lng: 7.2972, name: 'Riquewihr', note: 'Start · 09:00', type: 'start' },
+      { lat: 48.0644, lng: 7.0247, name: 'Col de la Schlucht', note: '1.139 m' },
+      { lat: 47.9292, lng: 7.0319, name: 'Markstein' },
+      { lat: 47.9028, lng: 7.1031, name: 'Grand Ballon', note: '1.424 m · Lunch' },
+      { lat: 47.7508, lng: 7.3359, name: 'Mulhouse', note: 'Cité de l\'Automobile', type: 'museum' },
+      { lat: 47.8064, lng: 7.8267, name: 'Aitern', note: 'Belchenhotel', type: 'end' }
+    ]
+  },
+  4: {
+    color: '#2C4A5C',
+    waypoints: [
+      { lat: 47.8064, lng: 7.8267, name: 'Aitern', note: 'Start · 09:30', type: 'start' },
+      { lat: 47.8333, lng: 7.8333, name: 'Belchen Gipfel', note: '1.414 m' },
+      { lat: 47.8197, lng: 8.1606, name: 'Schluchsee' },
+      { lat: 47.9003, lng: 8.1444, name: 'Titisee', note: 'Lunch' },
+      { lat: 48.0481, lng: 7.9647, name: 'Glottertal' },
+      { lat: 48.0667, lng: 7.9333, name: 'Kandel', note: '1.243 m' },
+      { lat: 49.0069, lng: 8.4037, name: 'Karlsruhe', note: 'Ankunft', type: 'end' }
+    ]
+  }
+};
+
+// ============================================================
+// MAP UTILITIES
+// ============================================================
+const TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_ATTR = '&copy; OpenStreetMap contributors · Routing: OSRM';
+
+const wpIcon = (type) => L.divIcon({
+  className: 'wp-marker',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  html: `<div class="pin ${type || 'via'}"></div>`
+});
+
+// Cache OSRM responses in memory to avoid duplicate calls
+const routeCache = new Map();
+
+async function fetchRoute(waypoints) {
+  const key = waypoints.map(w => `${w.lat},${w.lng}`).join('|');
+  if (routeCache.has(key)) return routeCache.get(key);
+
+  const coordStr = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
+  const url = `https://router.project-osrm.org/route/v1/driving/${coordStr}?overview=full&geometries=geojson`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('OSRM failed');
+    const data = await res.json();
+    if (!data.routes || !data.routes.length) throw new Error('no route');
+    const path = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+    routeCache.set(key, path);
+    return path;
+  } catch (err) {
+    // Fallback: straight lines between waypoints
+    const fallback = waypoints.map(w => [w.lat, w.lng]);
+    routeCache.set(key, fallback);
+    return fallback;
+  }
+}
+
+function buildStageMap(containerId, stageNum) {
+  const stage = STAGES[stageNum];
+  const map = L.map(containerId, {
+    scrollWheelZoom: false,
+    tap: true,
+    attributionControl: true
+  });
+
+  L.tileLayer(TILE_URL, {
+    attribution: TILE_ATTR,
+    maxZoom: 18
+  }).addTo(map);
+
+  // Markers
+  const bounds = L.latLngBounds([]);
+  stage.waypoints.forEach(wp => {
+    const marker = L.marker([wp.lat, wp.lng], { icon: wpIcon(wp.type) }).addTo(map);
+    let popup = `<b>${wp.name}</b>`;
+    if (wp.note) popup += `<span style="font-style:italic;color:#1B3A2C;">${wp.note}</span>`;
+    marker.bindPopup(popup);
+    bounds.extend([wp.lat, wp.lng]);
+  });
+
+  // Route line — async fetch, then draw
+  fetchRoute(stage.waypoints).then(coords => {
+    L.polyline(coords, {
+      color: stage.color,
+      weight: 4,
+      opacity: 0.85,
+      lineJoin: 'round',
+      lineCap: 'round'
+    }).addTo(map);
+    map.fitBounds(bounds, { padding: [30, 30] });
+  });
+
+  map.fitBounds(bounds, { padding: [30, 30] });
+
+  // Re-enable scroll wheel after click for desktop convenience
+  map.on('click', () => map.scrollWheelZoom.enable());
+  map.on('mouseout', () => map.scrollWheelZoom.disable());
+
+  return map;
+}
+
+function buildOverviewMap() {
+  const map = L.map('map-overview', {
+    scrollWheelZoom: false,
+    tap: true
+  });
+
+  L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 18 }).addTo(map);
+
+  const bounds = L.latLngBounds([]);
+
+  // Add all stage routes
+  Object.keys(STAGES).forEach(num => {
+    const stage = STAGES[num];
+    stage.waypoints.forEach(wp => bounds.extend([wp.lat, wp.lng]));
+
+    fetchRoute(stage.waypoints).then(coords => {
+      L.polyline(coords, {
+        color: stage.color,
+        weight: 4,
+        opacity: 0.8,
+        lineJoin: 'round'
+      }).addTo(map);
+    });
+
+    // Markers only for key points (start/end/museums)
+    stage.waypoints.forEach(wp => {
+      if (wp.type) {
+        const marker = L.marker([wp.lat, wp.lng], { icon: wpIcon(wp.type) }).addTo(map);
+        const note = wp.note ? `<span style="font-style:italic;color:#1B3A2C;">${wp.note}</span>` : '';
+        marker.bindPopup(`<b>${wp.name}</b>${note}`);
+      }
+    });
+  });
+
+  map.fitBounds(bounds, { padding: [30, 30] });
+  map.on('click', () => map.scrollWheelZoom.enable());
+  map.on('mouseout', () => map.scrollWheelZoom.disable());
+
+  return map;
+}
+
+// ============================================================
+// LAZY MAP INIT — IntersectionObserver
+// ============================================================
+const mapInitialized = new Set();
+
+function initMapLazy(el, initFn) {
+  if (mapInitialized.has(el.id)) return;
+  mapInitialized.add(el.id);
+  initFn();
+}
+
+if ('IntersectionObserver' in window) {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      if (el.id === 'map-overview') {
+        initMapLazy(el, buildOverviewMap);
+      } else {
+        const num = el.id.split('-')[1];
+        if (STAGES[num]) initMapLazy(el, () => buildStageMap(el.id, parseInt(num)));
+      }
+      obs.unobserve(el);
+    });
+  }, { rootMargin: '200px 0px' });
+
+  document.querySelectorAll('.map').forEach(el => obs.observe(el));
+} else {
+  // Fallback: init all immediately
+  buildOverviewMap();
+  Object.keys(STAGES).forEach(num => buildStageMap(`map-${num}`, parseInt(num)));
+}
+
+// ============================================================
+// WEATHER WIDGETS — Open-Meteo
+// ============================================================
+const WMO = {
+  0:  { i: '☀️', d: 'klar' },
+  1:  { i: '🌤️', d: 'überwiegend klar' },
+  2:  { i: '⛅', d: 'teilweise bewölkt' },
+  3:  { i: '☁️', d: 'bedeckt' },
+  45: { i: '🌫️', d: 'Nebel' },
+  48: { i: '🌫️', d: 'Reifnebel' },
+  51: { i: '🌦️', d: 'leichter Nieselregen' },
+  53: { i: '🌦️', d: 'Nieselregen' },
+  55: { i: '🌧️', d: 'starker Nieselregen' },
+  61: { i: '🌧️', d: 'leichter Regen' },
+  63: { i: '🌧️', d: 'Regen' },
+  65: { i: '🌧️', d: 'starker Regen' },
+  71: { i: '❄️', d: 'leichter Schneefall' },
+  73: { i: '❄️', d: 'Schneefall' },
+  75: { i: '❄️', d: 'starker Schneefall' },
+  80: { i: '🌧️', d: 'Schauer' },
+  81: { i: '🌧️', d: 'kräftige Schauer' },
+  82: { i: '⛈️', d: 'heftige Schauer' },
+  95: { i: '⛈️', d: 'Gewitter' },
+  96: { i: '⛈️', d: 'Gewitter mit Hagel' },
+  99: { i: '⛈️', d: 'starkes Gewitter' }
+};
+
+async function loadWeather(el) {
+  const lat = el.dataset.lat;
+  const lng = el.dataset.lng;
+  const date = el.dataset.date;
+
+  try {
+    // Try forecast endpoint first
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}` +
+                `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum` +
+                `&timezone=Europe%2FBerlin&start_date=${date}&end_date=${date}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.daily && data.daily.time && data.daily.time.length > 0) {
+      const tmax = Math.round(data.daily.temperature_2m_max[0]);
+      const tmin = Math.round(data.daily.temperature_2m_min[0]);
+      const code = data.daily.weathercode[0];
+      const prec = data.daily.precipitation_sum[0];
+
+      const wmo = WMO[code] || { i: '⛅', d: 'wechselhaft' };
+
+      el.querySelector('.weather-icon').textContent = wmo.i;
+      el.querySelector('.weather-detail').innerHTML =
+        `<span class="weather-temp">${tmin}° / ${tmax}°</span>` +
+        `<span class="weather-desc">${wmo.d}` +
+        (prec > 0.5 ? ` · ${prec.toFixed(1)} mm Niederschlag` : '') +
+        `</span>`;
+      el.classList.remove('loading');
+      return;
+    }
+    throw new Error('no data');
+  } catch (err) {
+    // Fallback: typical October weather note
+    el.querySelector('.weather-icon').textContent = '🍂';
+    el.querySelector('.weather-detail').innerHTML =
+      `<span class="weather-desc">Forecast noch nicht verfügbar — typisch Okt: 8–18 °C, Talnebel morgens, Höhen 5–10 °C kühler.</span>`;
+    el.classList.remove('loading');
+  }
+}
+
+document.querySelectorAll('.weather').forEach(loadWeather);
+
+// ============================================================
+// ACTIVE NAV HIGHLIGHTING
+// ============================================================
+const sections = document.querySelectorAll('section[id], header.hero');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+function setActiveLink(targetId) {
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + targetId);
+  });
+}
+
+if ('IntersectionObserver' in window) {
+  const navObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+        if (entry.target.id) setActiveLink(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-30% 0px -50% 0px', threshold: [0.3] });
+  sections.forEach(s => navObs.observe(s));
+}
+
+// Smooth scroll: scroll active nav link into view on click
+navLinks.forEach(a => {
+  a.addEventListener('click', () => {
+    setTimeout(() => a.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }), 100);
+  });
+});
+
+// ============================================================
+// SCROLL TO HASH ON LOAD
+// ============================================================
+if (location.hash) {
+  setTimeout(() => {
+    const target = document.querySelector(location.hash);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }, 200);
+}
+
+// Make stage table rows actually navigate
+document.querySelectorAll('.stages-table tbody tr').forEach(tr => {
+  tr.style.cursor = 'pointer';
+});
+
+</script>
+</body>
+</html>
