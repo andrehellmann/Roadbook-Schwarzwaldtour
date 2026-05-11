@@ -609,7 +609,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* STAGE                                                        */
 /* ============================================================ */
 .stage {
-  scroll-margin-top: 80px;
+  /* scroll position handled by html { scroll-padding-top } */
 }
 .stage-banner {
   background: var(--green-deep);
@@ -1954,7 +1954,6 @@ img { max-width: 100%; height: auto; display: block; }
       <ul class="tip-list">
         <li>In FR günstiger als DE — Tankstopp idealerweise im Elsass (Mulhouse, Colmar).</li>
         <li>Sasbachwalden, St. Märgen, Aitern: kleine Orte, Vorab-Tank empfohlen.</li>
-        <li>E-Fahrer: Belchenhotel hat Lader · Tiefgarage Riquewihr nahe Hôtel A l'Oriel.</li>
         <li>Vignette FR nicht nötig auf Landstraßen · Schweiz wird nicht gequert.</li>
       </ul>
     </div>
@@ -2307,10 +2306,23 @@ if ('IntersectionObserver' in window) {
   sections.forEach(s => navObs.observe(s));
 }
 
-// Smooth scroll: scroll active nav link into view on click
+// Smooth scroll: when a nav link is clicked, center it horizontally inside
+// the .nav-links scroll container WITHOUT touching vertical page scroll.
+// (scrollIntoView on the <a> can interrupt the browser's native smooth-scroll
+// to the hash target, which then leaves the page barely scrolled at all.)
 navLinks.forEach(a => {
   a.addEventListener('click', () => {
-    setTimeout(() => a.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }), 100);
+    const wrap = a.closest('.nav-links');
+    if (!wrap) return;
+    requestAnimationFrame(() => {
+      const linkRect = a.getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+      const target = wrap.scrollLeft
+                   + (linkRect.left - wrapRect.left)
+                   - (wrapRect.width / 2)
+                   + (linkRect.width / 2);
+      wrap.scrollTo({ left: target, behavior: 'smooth' });
+    });
   });
 });
 
